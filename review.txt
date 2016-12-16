@@ -1,0 +1,31 @@
+var express = require('express');
+var app = express();
+var server = require('http').Server(app);
+io.on('connection',
+
+
+//Server side
+io.on('connection', socket => {
+  console.log('Co nguoi ket noi');
+  socket.on('CLIET_SEND_MESSAGE', data => {
+    console.log(data);
+    // io.emit('SERVER_SEND_MESSAGE', data);
+    // socket.emit('SERVER_SEND_MESSAGE', data);
+    // socket.broadcast.emit('SERVER_SEND_MESSAGE', data);
+  })
+});
+
+//Client side
+<script>
+  $(document).ready(() => {
+    var socket = io();
+    $('#btn-send').click(() => {
+      var msg = $('#txt-message').val();
+      socket.emit('CLIET_SEND_MESSAGE', msg);
+    });
+
+    socket.on('SERVER_SEND_MESSAGE', msg => {
+      alert(msg);
+    });
+  });
+</script>

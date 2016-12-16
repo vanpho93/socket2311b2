@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Homepage</title>
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      $(document).ready(() => {
+        var socket = io();
+        $('#btn-dang-ky').click(() => {
+          var username = $('#txt-username').val();
+          $('#txt-username').val('');
+          socket.emit('DANG_KY',username);
+        });
+
+        socket.on('KET_QUA', result => {
+          if (result > 0) {
+            $('#txt-result').html('Đăng ký thành công');
+          } else {
+            $('#txt-result').html('Username đã tồn tại');
+          }
+        });
+
+        socket.on('NGUOI_DUNG_MOI', username => {
+          $('#list-user').append(`<li>${username}</li>`);
+        });
+
+        socket.on('DANH_SACH_ONLINE', mang => {
+          mang.forEach(e => $('#list-user').append(`<li>${e}</li>`));
+        });
+
+        socket.on('NGUOI_DUNG_NGAT_KET_NOI', username => {
+          alert(`${username} đã ngắt kết nối`);
+          $('#list-user li').each(function() {
+            if($(this).html() == username) {
+              $(this).remove();
+            }
+          });
+        });
+
+        $('#btn-send-msg').click(() => {
+          var msg = $('#txt-msg').val();
+          var receiver = $('#txt-receiver').val();
+          $('#list-msg').append(`<li>to ${receiver}: ${msg}</li>`);
+          socket.emit('CLIENT_SEND_MESSAGE', {receiver,msg});
+        });
+
+        socket.on('SERVER_BROADCAST', msg => {
+          $('#list-msg').append(`<li>${msg}</li>`);
+        });
+
+        socket.on('RECEIVE_MESSAGE', msg => {
+          $('#list-msg').append(`<li>${msg}</li>`);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Homepage</h1>
+    Username: <input type="text" id="txt-username">
+    <button type="button" id="btn-dang-ky">Check</button>
+    <br><br>
+    Message: <input type="text" id="txt-msg">
+    to <input type="text" id="txt-receiver">
+    <button type="button" id="btn-send-msg">Send</button>
+    <br>
+    <span id="txt-result"></span>
+    <ul id="list-user">
+
+    </ul>
+    <ul id="list-msg">
+
+    </ul>
+  </body>
+</html>
