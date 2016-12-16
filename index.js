@@ -12,7 +12,7 @@ var mangSocket = [];
 app.get('/', (req,res) => res.render('home'));
 io.on('connection', socket => {
   console.log('Co nguoi ket noi');
-  socket.emit('DANH_SACH_ONLINE', mang)
+  socket.emit('DANH_SACH_ONLINE', mang);
   socket.on('DANG_KY', username => {
     if (mang.indexOf(username) == -1) {
       mang.push(username);
@@ -32,7 +32,7 @@ io.on('connection', socket => {
   });
   socket.on('CLIENT_SEND_MESSAGE', data => {
     var {receiver,msg} = data;
-    var receiverSocket = mangSocket[mangSocket.findIndex(e =>e.username==receiver)];
+    var receiverSocket = mangSocket.find(e =>e.username==receiver);
     receiverSocket.emit('RECEIVE_MESSAGE', `${socket.username}: ${msg}`);
   });
 });

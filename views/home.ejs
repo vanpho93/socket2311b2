@@ -6,6 +6,7 @@
     <script src="jquery-3.1.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+      var receiver;
       $(document).ready(() => {
         var socket = io();
         $('#btn-dang-ky').click(() => {
@@ -23,15 +24,18 @@
         });
 
         socket.on('NGUOI_DUNG_MOI', username => {
-          $('#list-user').append(`<li>${username}</li>`);
+          $('#list-user').append(`<li id='${username}'>${username}</li>`);
         });
 
         socket.on('DANH_SACH_ONLINE', mang => {
-          mang.forEach(e => $('#list-user').append(`<li>${e}</li>`));
+          mang.forEach(e => $('#list-user').append(`<li id='${e}'>${e}</li>`));
+        });
+
+        $(document).on('click', 'li', function(){
+          receiver = $(this).html();
         });
 
         socket.on('NGUOI_DUNG_NGAT_KET_NOI', username => {
-          alert(`${username} đã ngắt kết nối`);
           $('#list-user li').each(function() {
             if($(this).html() == username) {
               $(this).remove();
@@ -41,7 +45,6 @@
 
         $('#btn-send-msg').click(() => {
           var msg = $('#txt-msg').val();
-          var receiver = $('#txt-receiver').val();
           $('#list-msg').append(`<li>to ${receiver}: ${msg}</li>`);
           socket.emit('CLIENT_SEND_MESSAGE', {receiver,msg});
         });
@@ -62,7 +65,6 @@
     <button type="button" id="btn-dang-ky">Check</button>
     <br><br>
     Message: <input type="text" id="txt-msg">
-    to <input type="text" id="txt-receiver">
     <button type="button" id="btn-send-msg">Send</button>
     <br>
     <span id="txt-result"></span>
