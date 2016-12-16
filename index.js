@@ -33,6 +33,10 @@ io.on('connection', socket => {
   socket.on('CLIENT_SEND_MESSAGE', data => {
     var {receiver,msg} = data;
     var receiverSocket = mangSocket.find(e =>e.username==receiver);
-    receiverSocket.emit('RECEIVE_MESSAGE', `${socket.username}: ${msg}`);
+    if(receiverSocket){
+      receiverSocket.emit('RECEIVE_MESSAGE', `${socket.username}: ${msg}`);
+    }else{
+      console.log('Khong tim thay');
+    }
   });
 });

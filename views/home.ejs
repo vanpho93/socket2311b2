@@ -31,8 +31,10 @@
           mang.forEach(e => $('#list-user').append(`<li id='${e}'>${e}</li>`));
         });
 
-        $(document).on('click', 'li', function(){
+        $(document).on('click', '#list-user li', function(){
           receiver = $(this).html();
+          $('#list-user li').removeClass('current');
+          $(this).addClass('current');
         });
 
         socket.on('NGUOI_DUNG_NGAT_KET_NOI', username => {
@@ -58,6 +60,11 @@
         });
       });
     </script>
+    <style media="screen">
+      .current{
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <h1>Homepage</h1>
